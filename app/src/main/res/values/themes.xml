@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.retrogame" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorPrimaryDark">@color/primary_dark_color</item>
+        <item name="colorAccent">@color/accent_color</item>
+        <item name="android:windowBackground">@color/background_color</item>
+        <item name="android:statusBarColor">@color/primary_dark_color</item>
+        <item name="android:navigationBarColor">@color/primary_dark_color</item>
+    </style>
+
+    <style name="GameText">
+        <item name="android:textColor">@color/text_color</item>
+        <item name="android:fontFamily">@font/fredoka_one</item>
+    </style>
+
+    <style name="GameText.Score">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="GameText.Time">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="GameButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/button_text_color</item>
+        <item name="backgroundTint">@color/button_background_color</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary_color">#3F51B5</color>
+    <color name="primary_dark_color">#303F9F</color>
+    <color name="accent_color">#FF4081</color>
+    <color name="background_color">#121212</color>
+    <color name="text_color">#FFFFFF</color>
+    <color name="button_text_color">#FFFFFF</color>
+    <color name="button_background_color">#3F51B5</color>
+    <color name="game_over_red">#FF5252</color>
+    <color name="high_score_gold">#FFD700</color>
+    <color name="grid_color">#1FFFFFFF</color>
+</resources>
