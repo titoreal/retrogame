@@ -46,7 +46,6 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    // Activity Lifecycle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupWindow()
@@ -55,10 +54,6 @@ class GameActivity : AppCompatActivity() {
         setContentView(binding.root)
         initializeViews()
         setupGame()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     // Initialization Methods
@@ -71,15 +66,6 @@ class GameActivity : AppCompatActivity() {
 
     private fun initializeViews() {
         gameView = binding.gameView
-
-        // Set up control buttons
-        fun setupControls() {
-            binding.apply {
-                leftButton.setOnClickListener { if (gameRunning) movePlayerLeft() }
-                rightButton.setOnClickListener { if (gameRunning) movePlayerRight() }
-                startButton.setOnClickListener { startGameWithEffects() }
-            }
-        }
     }
 
     private fun showStartButton() {
@@ -114,7 +100,7 @@ class GameActivity : AppCompatActivity() {
 
     // Game State Management
     private fun startGameWithEffects() {
-        hideStartButton()  // Usar el método auxiliar
+        hideStartButton()
         startGame()
     }
 
@@ -138,7 +124,7 @@ class GameActivity : AppCompatActivity() {
 
     private fun resetGameState() {
         gameRunning = false
-        showStartButton()  // Usar el método auxiliar
+        showStartButton()
         score = 0
         playerX = 4
         playerY = 10
@@ -195,15 +181,6 @@ class GameActivity : AppCompatActivity() {
             score = score,
             elapsedTime = (System.currentTimeMillis() - startTime) / 1000
         )
-    }
-
-
-
-    private fun updateObstacles() {
-        val currentTime = System.currentTimeMillis()
-        if ((currentTime - startTime) / moveDelay % 2 == 0L) {
-            obstacleX = (obstacleX + 1) % 8
-        }
     }
 
 }
