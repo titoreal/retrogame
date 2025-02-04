@@ -1,5 +1,6 @@
 package com.titin.retrogame
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.BlurMaskFilter
 import android.graphics.Canvas
@@ -7,6 +8,7 @@ import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.RadialGradient
 import android.graphics.Shader
 import android.util.AttributeSet
 import android.view.View
@@ -17,22 +19,17 @@ class GameView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-
     // Properties
     private var cellWidth = 0f
     private var cellHeight = 0f
     private var gameState: GameState? = null
 
-
     // Animation Properties
     private var playerRotation = 0f
     private var playerScale = 1f
 
-
     // Visual Elements Collections
-
     private val playerPath = Path()
-
     private val paints = setupPaints()
 
     init {
@@ -50,7 +47,6 @@ class GameView @JvmOverloads constructor(
                 Shader.TileMode.CLAMP
             )
         }
-
         val playerGlow = Paint().apply {
             style = Paint.Style.STROKE
             color = Color.parseColor("#A5D6A7")
@@ -74,12 +70,13 @@ class GameView @JvmOverloads constructor(
             close()
         }
     }
+
     fun updateState(state: GameState) {
         gameState = state
         invalidate()
     }
-    
-        // Drawing Methods
+
+    // Drawing Methods
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
@@ -88,9 +85,7 @@ class GameView @JvmOverloads constructor(
         gameState?.let { state ->
             val playerPixelX = state.playerX * cellWidth + cellWidth / 2
             val playerPixelY = state.playerY * cellHeight + cellHeight / 2
-
             drawPlayer(canvas, playerPixelX, playerPixelY)
-
         }
     }
 
@@ -102,6 +97,7 @@ class GameView @JvmOverloads constructor(
                 paints.grid
             )
         }
+
         for (i in 0..Constants.GRID_ROWS) {
             canvas.drawLine(
                 0f, i * cellHeight,
@@ -127,5 +123,27 @@ class GameView @JvmOverloads constructor(
         cellWidth = w / Constants.GRID_COLUMNS.toFloat()
         cellHeight = h / Constants.GRID_ROWS.toFloat()
     }
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

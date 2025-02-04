@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import com.titin.retrogame.databinding.ActivityGameBinding
-
 import java.util.Collections
 
 class GameActivity : AppCompatActivity() {

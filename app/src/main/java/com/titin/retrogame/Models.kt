@@ -22,3 +22,4 @@ data class Target(
     val y: Int,
     var isActive: Boolean = true
 )
+
