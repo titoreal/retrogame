@@ -1,4 +1,4 @@
-package com.titin.retrogame
+package com.titin.obstaclesgame
 
 import org.junit.Test
 

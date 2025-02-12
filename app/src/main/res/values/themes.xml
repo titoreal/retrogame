@@ -14,12 +14,12 @@
         <item name="android:fontFamily">@font/fredoka_one</item>
     </style>
 
-    <style name="GameText.Puntaje">
+    <style name="GameText.Score">
         <item name="android:textSize">24sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="GameText.Tiempo">
+    <style name="GameText.Time">
         <item name="android:textSize">20sp</item>
     </style>
 

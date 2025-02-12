@@ -23,3 +23,23 @@ data class Target(
     var isActive: Boolean = true
 )
 
+data class Star(
+    var x: Float,
+    var y: Float,
+    var size: Float,
+    var alpha: Int,
+    var speed: Float
+)
+
+data class Nebula(
+    var x: Float,
+    var y: Float,
+    var radius: Float,
+    var color: Int,
+    var alpha: Int
+)
+enum class SoundEffect {
+    COLLISION,
+    GAME_OVER,
+    START_GAME
+}

@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="26dp"
+        android:padding="8dp"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -20,7 +20,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            style="@style/GameText.Puntaje"
+            style="@style/GameText.Score"
             android:gravity="center"
             android:text="Puntaje: 0"/>
 
@@ -29,7 +29,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            style="@style/GameText.Tiempo"
+            style="@style/GameText.Time"
             android:gravity="center"
             android:text="Tiempo: 0s"/>
     </LinearLayout>
@@ -62,8 +62,7 @@
             android:layout_weight="1"
             android:layout_marginEnd="32dp"
             android:text="←"
-            android:textSize="36sp"
-            android:textStyle="bold"
+            android:textSize="24sp"
             style="@style/GameButton"/>
 
         <Button
@@ -72,8 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="→"
-            android:textSize="36sp"
-            android:textStyle="bold"
+            android:textSize="24sp"
             style="@style/GameButton"/>
     </LinearLayout>
 

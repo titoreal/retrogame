@@ -1,4 +1,4 @@
-package com.titin.retrogame
+package com.titin.obstaclesgame
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

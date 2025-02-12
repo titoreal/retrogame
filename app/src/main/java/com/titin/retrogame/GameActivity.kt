@@ -19,6 +19,7 @@ class GameActivity : AppCompatActivity() {
 
     // Properties - UI Components
     private lateinit var gameView: GameView
+    private lateinit var soundManager: SoundManager
 
     // Properties - Game State
     private val gameState = MutableLiveData<GameState>()
@@ -51,14 +52,25 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
+    // Activity Lifecycle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupWindow()
 
         binding = ActivityGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         initializeViews()
+        initializeSoundManager()  // Agregamos la inicialización del SoundManager
         setupGame()
+    }
+    private fun initializeSoundManager() {
+        soundManager = SoundManager(this).apply {
+        }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        cleanup()
     }
 
     // Initialization Methods
@@ -72,6 +84,27 @@ class GameActivity : AppCompatActivity() {
     private fun initializeViews() {
         gameView = binding.gameView
 
+        // Set up control buttons
+        fun setupControls() {
+            binding.apply {
+                leftButton.setOnClickListener { if (gameRunning) movePlayerLeft() }
+                rightButton.setOnClickListener { if (gameRunning) movePlayerRight() }
+                startButton.setOnClickListener { startGameWithEffects() }
+            }
+        }
+
+        // Update UI elements
+        updateScore(0)
+        updateTime(0)
+    }
+
+    private fun updateScore(newScore: Int) {
+        score = newScore
+        binding.scoreText.text = "Puntaje: $score"
+    }
+
+    private fun updateTime(seconds: Int) {
+        binding.timeText.text = "Tiempo: ${seconds}s"
     }
 
     private fun showStartButton() {
@@ -81,6 +114,7 @@ class GameActivity : AppCompatActivity() {
     private fun hideStartButton() {
         binding.startButton.visibility = View.GONE
     }
+
 
     private fun setupGame() {
         setupGameState()
@@ -105,7 +139,8 @@ class GameActivity : AppCompatActivity() {
 
     // Game State Management
     private fun startGameWithEffects() {
-        hideStartButton()  // Usar el método auxiliar
+        hideStartButton()
+        soundManager.playSound(SoundEffect.START_GAME)
         startGame()
     }
 
@@ -114,30 +149,7 @@ class GameActivity : AppCompatActivity() {
         generateTargets()
         handler.post(gameLoop)
     }
-    private fun generateTargets() {
-        synchronized(targets) {
-            targets.clear()
-            val availablePositions = generateAvailablePositions()
-            availablePositions.shuffle()
-            repeat(maxTargets) {
-                if (availablePositions.isNotEmpty()) {
-                    val pos = availablePositions.removeAt(0)
-                    targets.add(Target(x = pos.first, y = pos.second))
-                }
-            }
-            remainingTargets = maxTargets
-        }
-    }
 
-    private fun generateAvailablePositions(): MutableList<Pair<Int, Int>> {
-        val positions = mutableListOf<Pair<Int, Int>>()
-        for (x in 0..7) {
-            for (y in 2..10) {
-                positions.add(Pair(x, y))
-            }
-        }
-        return positions
-    }
     private fun initializeGameState() {
         gameRunning = true
         score = 0
@@ -154,7 +166,7 @@ class GameActivity : AppCompatActivity() {
 
     private fun resetGameState() {
         gameRunning = false
-        showStartButton()  // Usar el método auxiliar
+        showStartButton()
         score = 0
         playerX = 4
         playerY = 10
@@ -163,10 +175,15 @@ class GameActivity : AppCompatActivity() {
         updateGameState()
     }
 
+    private fun cleanup() {
+        handler.removeCallbacks(gameLoop)
+        soundManager.release()
+    }
+
     // Game Logic - Movement and Updates
     private fun updateGame() {
         val movement = calculateNextMovement()
-
+        if (score > 200) updateObstacles()
         checkCollisionsWithMovement(movement)
         updateLastPosition()
         updateGameState()
@@ -205,7 +222,16 @@ class GameActivity : AppCompatActivity() {
 
     // Collision Detection
     private fun checkCollisionsWithMovement(movement: MovementVector) {
+        checkObstacleCollisionIfNeeded(movement)
         checkTargetCollisions(movement)
+    }
+
+    private fun checkObstacleCollisionIfNeeded(movement: MovementVector) {
+        if (score > 200 && movement.fromY > movement.toY) {
+            if (movement.toY == 0 || movement.fromY == 0) {
+                checkObstacleCollision()
+            }
+        }
     }
 
     private fun checkTargetCollisions(movement: MovementVector) {
@@ -239,6 +265,8 @@ class GameActivity : AppCompatActivity() {
             targetX - fromX < -4 -> targetX + 8
             else -> targetX
         }
+
+
         val minX = min(fromX, fromX + adjustedDeltaX)
         val maxX = max(fromX, fromX + adjustedDeltaX)
         val minY = min(fromY, toY)
@@ -251,6 +279,7 @@ class GameActivity : AppCompatActivity() {
 
         val moveRatioX = (adjustedTargetX - fromX).toFloat() / adjustedDeltaX
         val expectedY = fromY + (toY - fromY) * moveRatioX
+
 
         return abs(targetY - expectedY) <= 0.5f
     }
@@ -278,7 +307,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun showCollisionEffects() {
-
+        soundManager.playSound(SoundEffect.COLLISION)
         val collisionX = playerX * gameView.getCellWidth() + gameView.getCellWidth() / 2
         val collisionY = playerY * gameView.getCellHeight() + gameView.getCellHeight() / 2
         gameView.showCollisionAnimation(collisionX, collisionY)
@@ -305,11 +334,74 @@ class GameActivity : AppCompatActivity() {
 
     private fun updateUI(state: GameState) {
         binding.apply {
-            scoreText.text = "Score: ${state.score}"
-            timeText.text = "Time: ${state.elapsedTime}s"
+            scoreText.text = "Puntaje: ${state.score}"
+            timeText.text = "Tiempo: ${state.elapsedTime}s"
         }
     }
 
+    // Target Generation and Obstacle Management
+    private fun generateTargets() {
+        synchronized(targets) {
+            targets.clear()
+            val availablePositions = generateAvailablePositions()
+            availablePositions.shuffle()
+            repeat(maxTargets) {
+                if (availablePositions.isNotEmpty()) {
+                    val pos = availablePositions.removeAt(0)
+                    targets.add(Target(x = pos.first, y = pos.second))
+                }
+            }
+            remainingTargets = maxTargets
+        }
+    }
 
+    private fun generateAvailablePositions(): MutableList<Pair<Int, Int>> {
+        val positions = mutableListOf<Pair<Int, Int>>()
+        for (x in 0..7) {
+            for (y in 2..10) {
+                positions.add(Pair(x, y))
+            }
+        }
+        return positions
+    }
+
+    private fun updateObstacles() {
+        val currentTime = System.currentTimeMillis()
+        if ((currentTime - startTime) / moveDelay % 2 == 0L) {
+            obstacleX = (obstacleX + 1) % 8
+        }
+    }
+
+    private fun checkObstacleCollision() {
+        val collisionMargin = 0.125f
+        if (isCollidingWithObstacle(obstacleX, collisionMargin) ||
+            isCollidingWithObstacle((obstacleX + 1) % 8, collisionMargin)) {
+            gameOver()
+        }
+    }
+
+    private fun isCollidingWithObstacle(obstaclePos: Int, margin: Float): Boolean {
+        return playerX >= obstaclePos - margin &&
+                playerX <= (obstaclePos + 1 - margin) &&
+                playerY == 0
+    }
+
+    // Game Over Handling
+    private fun gameOver() {
+        gameRunning = false
+        handler.removeCallbacks(gameLoop)
+        soundManager.playSound(SoundEffect.GAME_OVER)
+        gameView.startGameOverAnimation()
+        showGameOverDialog()
+    }
+
+    private fun showGameOverDialog() {
+        GameOverDialog(
+            context = this,
+            score = score,
+            onRestart = { showStartScreen() },
+            onExit = { finish() }
+        ).show()
+    }
 
 }
